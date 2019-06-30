@@ -1,0 +1,6 @@
+{
+   "wallet_dir": "./wallets",
+   "wallet_ext": "pv",
+   "vault_dir": "./vault",
+   "vault_ext": "pv"
+}

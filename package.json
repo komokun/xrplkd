@@ -1,0 +1,71 @@
+{
+  "name": "classes",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "babel src -d dist --source-maps",
+    "serve": "NODE_ENV=production node dist/index.js",
+    "start": "NODE_ENV=development babel-node src/index.js",
+    "dev": "DEBUG=server:debug NODE_ENV=development nodemon src/index.js --exec babel-node",
+    "test": "DEBUG=server:debug NODE_ENV=test mocha --require babel-core/register --reporter spec --exit   tests/ --exec babel-node",
+    "test:watch": "DEBUG=server:debug NODE_ENV=development mocha  --require babel-core/register --watch --reporter  spec   tests/ --exec babel-node",
+    "eslint": "eslint src/**/*.js --ignore-pattern \"node_modules/\""
+  },
+  "main": "index.js",
+  "author": "Khosi Morafo",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-node8": "^1.2.0",
+    "chai": "^4.2.0",
+    "config": "^3.0.1",
+    "debug": "^4.1.1",
+    "mocha": "^5.2.0",
+    "supertest": "^3.4.2"
+  },
+  "babel": {
+    "presets": [
+      "node8"
+    ]
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "eslintConfig": {
+    "plugins": [
+      "node"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:node/recommended"
+    ],
+    "rules": {
+      "node/no-unsupported-features/es-syntax": 0,
+      "node/no-unsupported-features/es-builtins": 0
+    },
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaVersion": 2018
+    }
+  },
+  "dependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/register": "^7.4.4",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "generate-password": "^1.4.2",
+    "lokijs": "^1.5.6",
+    "mkdirp": "^0.5.1",
+    "moment": "^2.24.0",
+    "mongoose": "^5.5.15",
+    "nedb": "^1.8.0",
+    "nedb-promises": "^3.0.5",
+    "nodemon": "^1.19.1",
+    "pvault": "^1.0.3",
+    "ripple-keypairs": "^0.11.0"
+  }
+}
