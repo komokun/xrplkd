@@ -1,4 +1,4 @@
-import { createWallet, getWallets as listWallets } from './wallet/wallet.controller';
+import { createWallet, listWallets } from './wallet/wallet.controller';
 
 const appRoutes = router => {
     router.post('/wallet/create', createWallet);
