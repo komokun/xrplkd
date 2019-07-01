@@ -1,4 +1,7 @@
 {
+   "name": "Server Production",
+   "port": 3100,
+
    "wallet_dir": ".",
    "wallet_ext": "wallet",
    "vault_dir": ".",

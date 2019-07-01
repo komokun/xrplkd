@@ -1,51 +1,35 @@
-import _            from 'lodash'
 import { expect }   from 'chai'
 import rimraf       from 'rimraf'
-import path         from 'path'
-import crypto       from 'crypto'
-import mkdirp       from "mkdirp"
 
 import manager      from '../src/wallet/wallet.manager'
-import config       from 'config';
-import { Keys }     from '../src/crypto/xrpl.keys';
+import { Keys }     from '../src/crypto/xrpl.keys'
 
-const fixtures      = require('./fixtures/sign.json')
-
-const vaultFolder   = path.join(config.get('vault_dir'));
-const walletFolder  = path.join(config.get('wallet_dir'));
-
-function vaultName() {
-    return crypto.randomBytes(6).toString('hex');
-}
+import { Glob }        from './fixtures/test.config'
+const fixtures      = require('./fixtures/sign.json');
 
 async function new_wallet_fixture(...names) {
 
     Array.from(names).forEach(async (name) => {
         await manager.create(name).then((result) => { expect(JSON.parse(result).result).to.equal('success');});
-    })
+    });
 }
 
 const delay = ms => new Promise(_ => setTimeout(_, ms));
 
-describe("Wallet Tests", function() {
+describe("Wallet Core Tests", function() {
 
-    this.timeout(11000); // This works
+    this.timeout(11000); // This works only if ES6 is not used to instance the function.
 
-    var glob_contents = '{' + `${vaultFolder}/*` + `,` + `${walletFolder}/*`+ '}';
-    var glob_all = '{' + `${vaultFolder}` + `,` + `${walletFolder}`+ '}';
-    
-    mkdirp(config.get('vault_dir'));
-    mkdirp(config.get('wallet_dir'));
-    
+    Glob.init();
     /**
      * Delete the test/ directory before each test
      */
     afterEach(done => {
-        rimraf(glob_contents, done);
+        rimraf(Glob.contents(), done);
     });
 
     after(done => {
-        rimraf(glob_all, done);
+        rimraf(Glob.all(), done);
     })
 
     it("Creates a new wallet.", async () => {
@@ -132,7 +116,6 @@ describe("Wallet Tests", function() {
         const second_keys = await Keys.pairs();
         expect(JSON.parse(second_keys).result).to.equal('success');
         // Create wallet
-        //await manager.create('bag');
         const wallet = await manager.create(name);
         // Unlock wallet
         let unlocked = await manager.unlock(name, JSON.parse(wallet).data.password);
@@ -161,11 +144,9 @@ describe("Wallet Tests", function() {
         const keys = await Keys.pairs();
         expect(JSON.parse(keys).result).to.equal('success');
         // Create wallet
-        //await manager.create('bag');
         const wallet = await manager.create(name);
         // Unlock wallet
         let unlocked = await manager.unlock(name, JSON.parse(wallet).data.password);
-        //let wallet = JSON.parse(unlocked).data;
         expect(JSON.parse(unlocked).data.status).to.equal('unlocked');
         // Add key to wallet
         const key_added = await manager.add_key(name, JSON.parse(keys).data.secret);
@@ -180,11 +161,9 @@ describe("Wallet Tests", function() {
 
         // Create wallet
         let name = 'bag'
-        //await manager.create('bag');
         const wallet = await manager.create(name);
         // Unlock wallet
         let unlocked = await manager.unlock(name, JSON.parse(wallet).data.password);
-        //let wallet = JSON.parse(unlocked).data;
         expect(JSON.parse(unlocked).data.status).to.equal('unlocked');
         // Add first key to wallet
         const key_added = await manager.add_key(name, fixtures.seed);

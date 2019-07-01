@@ -1,12 +1,13 @@
 import Manager from './wallet.manager'
-import { Keys }  from '../crypto/xrpl.utils'
+import { Keys }  from '../crypto/xrpl.keys'
 
 
 export const createWallet = (req, res, next) => {
 
     Manager.create(req.body.name)
     .then( (result) => {
-        res.json(result); 
+        res.status(201); 
+        res.json(result);
     })
     .catch( (err) => {
         res.json({
@@ -19,6 +20,7 @@ export const lockWallet = (req, res, next) => {
 
     Manager.lock(req.body.name)
     .then( (result) => {
+        res.status(202); 
         res.json(result); 
     })
     .catch( (err) => {
@@ -37,6 +39,7 @@ export const unlockWallet = (req, res, next) => {
 
     Manager.unlock(input.name, input.password)
     .then( (result) => {
+        res.status(202); 
         res.json(result); 
     })
     .catch( (err) => {
@@ -47,6 +50,8 @@ export const unlockWallet = (req, res, next) => {
 };
 
 export const listWallets = (req, res, next) => {
+
+    // console.log('Inside Controller List Wallet ');
 
     Manager.list()
     .then( (result) => {
@@ -68,6 +73,7 @@ export const addKey = (req, res, next) => {
 
     Manager.add_key(input.name, input.secret)
     .then( (result) => {
+       res.status(201); 
        res.json(result); 
     })
     .catch( (err) => {
@@ -85,9 +91,12 @@ export const signTransaction = (req, res, next) => {
         message: req.body.message,
     };
 
-    Manager.add_key(input.name, input.secret)
+    // console.log('Inside Controller Sign Transaction : ', input);
+
+    Manager.sign_transaction(input.name, input.address, input.message)
     .then( (result) => {
-       res.json(result); 
+        res.status(201); 
+        res.json(result);
     })
     .catch( (err) => {
         res.json({
@@ -101,6 +110,7 @@ export const createKeyPair = (req, res, next) => {
 
     Keys.pairs()
     .then( (result) => {
+        res.status(201); 
         res.json(result); 
     })
     .catch( (err) => {

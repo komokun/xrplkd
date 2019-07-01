@@ -1,4 +1,8 @@
 {
+
+   "name": "Server Test",
+   "port": 3100,
+
    "wallet_dir": "./wallets",
    "wallet_ext": "pv",
    "vault_dir": "./vault",
