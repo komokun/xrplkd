@@ -38,7 +38,6 @@ describe('Wallets API Tests',()=>{
     it('POST /api/v1/wallet/create creates a wallet',async()=>{
         const response= await request(server).post('/api/v1/wallet/create');
         expect(response.status).to.equal(201)
-        console.log('Created Wallet ', response.body);
         expect(JSON.parse(response.body).result).to.equal('success');
         expect(JSON.parse(response.body).data.password).to.have.lengthOf(32);
     })
@@ -97,7 +96,6 @@ describe('Wallets API Tests',()=>{
 
     it('POST /api/v1/wallet/keypair creates new signing key. Return xrp address and secret(seed)',async()=>{
         const response= await request(server).post('/api/v1/wallet/keypair');
-        console.log(response.body);
         expect(response.status).to.equal(201)
         expect(JSON.parse(response.body).result).to.equal('success');
     })
