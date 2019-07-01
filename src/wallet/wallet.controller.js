@@ -51,8 +51,6 @@ export const unlockWallet = (req, res, next) => {
 
 export const listWallets = (req, res, next) => {
 
-    // console.log('Inside Controller List Wallet ');
-
     Manager.list()
     .then( (result) => {
        res.json(result); 
@@ -90,8 +88,6 @@ export const signTransaction = (req, res, next) => {
         address: req.body.address,
         message: req.body.message,
     };
-
-    // console.log('Inside Controller Sign Transaction : ', input);
 
     Manager.sign_transaction(input.name, input.address, input.message)
     .then( (result) => {
