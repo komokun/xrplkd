@@ -1,0 +1,12 @@
+[Unit]
+Description=XRPL Key Vault Service Daemon
+After=network.target
+
+[Service]
+WorkingDirectory=%WORKING_DIR%
+ExecStart=%YARN% serve
+Restart=on-failure
+User=l
+
+[Install]
+WantedBy=multi-user.target
