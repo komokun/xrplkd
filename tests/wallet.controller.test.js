@@ -1,12 +1,12 @@
-import { expect } from 'chai';
-import rimraf       from 'rimraf'
-import server from '../src/index';
-import  request  from 'supertest';
+import { expect }       from 'chai';
+import rimraf           from 'rimraf'
+import server           from '../src/index';
+import  request         from 'supertest';
 
-import manager      from '../src/wallet/wallet.manager'
+import manager          from '../src/wallet/wallet.manager'
+import { Glob }         from './fixtures/test.config'
 
-import { Glob }        from './fixtures/test.config'
-const fixtures      = require('./fixtures/sign.json');
+const fixtures          = require('./fixtures/sign.json');
 
 
 async function wallet_fixture(name) {
@@ -15,7 +15,6 @@ async function wallet_fixture(name) {
 }
 
 async function wallet_fixture_with_key(name){
-
     let wallet = await manager.create(name);
     // Unlock wallet
     let unlocked = await manager.unlock(name, JSON.parse(wallet).data.password);
@@ -71,12 +70,22 @@ describe('Wallets API Tests',()=>{
         expect(JSON.parse(response.body).data.status).to.equal('unlocked');
     })
 
+    it("GET /api/v1/wallet/:name/keys returns a list of addresses in a wallet.", async () => {
+        let name = 'hodl'
+        let keyed_wallet = await wallet_fixture_with_key(name);
+        expect(JSON.parse(keyed_wallet).data.keys).to.have.lengthOf(1);
+
+        const response= await request(server).get('/api/v1/wallet/:name/keys');
+        expect(response.status).to.equal(200)
+        expect(JSON.parse(response.body).result).to.equal('success');
+        expect(JSON.parse(response.body).data).to.have.lengthOf(1);
+    })
+
     it('GET /api/v1/wallet/list returns a list of valid of wallets', async()=>{
         const response= await request(server).get('/api/v1/wallet/list');
         expect(response.status).to.equal(200)
         expect(JSON.parse(response.body).result).to.equal('success');
     })
-    
     
     it('POST /api/v1/wallet/sign_transaction returns a signed transaction', async()=>{
         let name = 'hodl'
@@ -88,7 +97,6 @@ describe('Wallets API Tests',()=>{
                                 .post('/api/v1/wallet/sign')
                                 .send(body)
                                 .set('Accept', 'application/json');
-
         expect(response.status).to.equal(201);
         expect(JSON.parse(response.body).result).to.equal('success');
         expect(JSON.parse(response.body).data.signature).to.equal(fixtures.signature);
@@ -99,6 +107,4 @@ describe('Wallets API Tests',()=>{
         expect(response.status).to.equal(201)
         expect(JSON.parse(response.body).result).to.equal('success');
     })
-    
-
 })

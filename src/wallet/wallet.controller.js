@@ -4,7 +4,10 @@ import { Keys }  from '../crypto/xrpl.keys'
 
 export const createWallet = (req, res, next) => {
 
-    Manager.create(req.body.name)
+    let name = '';
+    if (req.name) { name = req.name; } 
+    
+    Manager.create(name)
     .then( (result) => {
         res.status(201); 
         res.json(result);
@@ -81,6 +84,20 @@ export const addKey = (req, res, next) => {
     })
 };
 
+export const walletKeys = (req, res, next) => {
+
+    Manager.public_keys(name)
+    .then( (result) => {
+        res.status(200); 
+        res.json(result); 
+    })
+    .catch( (err) => {
+        res.json({
+            error: err
+        });
+    })
+};
+
 export const signTransaction = (req, res, next) => {
 
     let input = {
@@ -100,7 +117,6 @@ export const signTransaction = (req, res, next) => {
         });
     })
 };
-
 
 export const createKeyPair = (req, res, next) => {
 

@@ -19,6 +19,10 @@ const WalletManager = {
 
    create: (name) => {
 
+      if(name.trim() === ''){
+         name = 'default';
+      }
+
       if (!check_if_name_is_valid(name)) { 
          return Result('failure', {}, `The submitted name cannot be used as wallet name`);
       }
@@ -28,7 +32,7 @@ const WalletManager = {
       }
 
       let password = Password.generate();
-      let vault = new Vault(name, password, { create: true });
+      new Vault(name, password, { create: true });
       message = `Wallet '${name}' has been created with password ${password}. Ensure password is kept safely.`
       return Result('success', { wallet: name, password: password }, message);
    },
@@ -106,7 +110,8 @@ const WalletManager = {
    // Wallet name. Use as Safekeeper 'key'
    public_keys: (name) => { 
 
-      return Result('success', WalletInfo.get_public_keys(name), message`${pubkeys.length} valid public key(s) found.`);
+      let keys = WalletInfo.get_public_keys(name);
+      return Result('success', keys, `${keys.length} valid public key(s) found.`);
    },
 
    sign_transaction: (name, address, message) => { 
