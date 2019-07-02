@@ -4,6 +4,9 @@ sed -e "s;%WORKING_DIR%;$1;g" -e "s;%YARN%;$2;g" -e "s;%DIR%;$3;g" service.templ
 
 sudo cp xrplkd.service /etc/systemd/system
 
+sudo rm xrplkd.service
+
 sudo systemctl enable xrplkd.service 
 
 sudo systemctl start xrplkd.service
+
