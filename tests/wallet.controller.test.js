@@ -41,41 +41,50 @@ describe('Wallets API Tests',()=>{
         expect(JSON.parse(response.body).data.password).to.have.lengthOf(32);
     })
 
-    it('POST /api/v1/wallet/lock locks an unlocked wallet', async()=>{
-        let name = 'hodl'
-        let unlocked_wallet = await wallet_fixture_with_key(name);
+    it('PUT /api/v1/wallet/:name/lock locks an unlocked wallet', async()=>{
+        const name = 'hodl'
+        const unlocked_wallet = await wallet_fixture_with_key(name);
         expect(JSON.parse(unlocked_wallet).data.keys).to.have.lengthOf(1);
-        let body = { name: name }; 
-        const response= await request(server)
-                                .post('/api/v1/wallet/lock')
-                                .send(body)
-                                .set('Accept', 'application/json');
+        
+        const url = `/api/v1/wallet/${name}/lock`;
+        const response= await request(server).put(url).set('Accept', 'application/json');
         expect(response.status).to.equal(202)
         expect(JSON.parse(response.body).result).to.equal('success');
         expect(JSON.parse(response.body).data.status).to.equal('locked');
     })
 
-    it('POST /api/v1/wallet/unlock locks an unlocked wallet', async()=>{
-        let name = 'hodl'
-        let wallet = await wallet_fixture(name);
+    it('PUT /api/v1/wallet/:name/unlock/:pass locks an unlocked wallet', async()=>{
+        const name = 'hodl'
+        const wallet = await wallet_fixture(name);
         expect(JSON.parse(wallet).data.password).to.have.lengthOf(32);
 
-        let body = { name: name, password: JSON.parse(wallet).data.password }; 
-        const response= await request(server)
-                                .post('/api/v1/wallet/unlock')
-                                .send(body)
-                                .set('Accept', 'application/json');
+        const url = `/api/v1/wallet/${name}/unlock/${JSON.parse(wallet).data.password}`;
+        const response= await request(server).put(url).set('Accept', 'application/json');
         expect(response.status).to.equal(202)
         expect(JSON.parse(response.body).result).to.equal('success');
         expect(JSON.parse(response.body).data.status).to.equal('unlocked');
     })
+
+    it("PUT /api/v1/wallet/:name/addkey/:secret returns a list of addresses in a wallet.", async () => {
+        const name = 'hodl'
+        const keyed_wallet = await wallet_fixture_with_key(name);
+        expect(JSON.parse(keyed_wallet).data.keys).to.have.lengthOf(1);
+
+        const url = `/api/v1/wallet/${name}/addkey/${fixtures.seed}`;
+        const response= await request(server).put(url);
+        expect(response.status).to.equal(202)
+        expect(JSON.parse(response.body).result).to.equal('success');
+        expect(JSON.parse(response.body).data.keys).to.have.lengthOf(2);
+    })
+
 
     it("GET /api/v1/wallet/:name/keys returns a list of addresses in a wallet.", async () => {
         let name = 'hodl'
         let keyed_wallet = await wallet_fixture_with_key(name);
         expect(JSON.parse(keyed_wallet).data.keys).to.have.lengthOf(1);
 
-        const response= await request(server).get(`/api/v1/wallet/${name}/keys`);
+        let url = `/api/v1/wallet/${name}/keys`;
+        const response= await request(server).get(url);
         expect(response.status).to.equal(200)
         expect(JSON.parse(response.body).result).to.equal('success');
         expect(JSON.parse(response.body).data).to.have.lengthOf(1);

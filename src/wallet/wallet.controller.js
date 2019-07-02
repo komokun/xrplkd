@@ -4,7 +4,7 @@ import { Keys }  from '../crypto/xrpl.keys'
 
 export const createWallet = (req, res, next) => {
 
-    let name = '';
+    const name = '';
     if (req.name) { name = req.name; } 
     
     Manager.create(name)
@@ -21,7 +21,9 @@ export const createWallet = (req, res, next) => {
 
 export const lockWallet = (req, res, next) => {
 
-    Manager.lock(req.body.name)
+    const name = req.params.name;
+
+    Manager.lock(name)
     .then( (result) => {
         res.status(202); 
         res.json(result); 
@@ -35,12 +37,10 @@ export const lockWallet = (req, res, next) => {
 
 export const unlockWallet = (req, res, next) => {
 
-    let input = {
-        name: req.body.name,
-        password: req.body.password,
-    };
+    const name = req.params.name;
+    const pass = req.params.pass;
 
-    Manager.unlock(input.name, input.password)
+    Manager.unlock(name, pass)
     .then( (result) => {
         res.status(202); 
         res.json(result); 
@@ -67,14 +67,12 @@ export const listWallets = (req, res, next) => {
 
 export const addKey = (req, res, next) => {
 
-    let input = {
-        name: req.body.name,
-        secret: req.body.secret,
-    };
+    let name = req.params.name;
+    let secret = req.params.secret;
 
-    Manager.add_key(input.name, input.secret)
+    Manager.add_key(name, secret)
     .then( (result) => {
-       res.status(201); 
+       res.status(202); 
        res.json(result); 
     })
     .catch( (err) => {
@@ -86,8 +84,8 @@ export const addKey = (req, res, next) => {
 
 export const walletKeys = (req, res, next) => {
 
-    name = req.params.name;
-    console.log('Wallet Keys name is : ', name);    
+    let name = req.params.name;
+    
     Manager.public_keys(name)
     .then( (result) => {
         res.status(200); 

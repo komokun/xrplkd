@@ -3,8 +3,8 @@ import { createWallet, listWallets, lockWallet, unlockWallet,
 
 const appRoutes = router => {
     router.post('/wallet/create', createWallet);
-    router.post('/wallet/lock', lockWallet);
-    router.post('/wallet/unlock', unlockWallet);
+    router.put('/wallet/:name/lock', lockWallet);
+    router.put('/wallet/:name/unlock/:pass', unlockWallet);
     router.put('/wallet/:name/addkey/:secret', addKey);
     router.get('/wallet/:name/keys', walletKeys);
     router.get('/wallet/list', listWallets);
