@@ -15,9 +15,9 @@ async function wallet_fixture(name) {
 }
 
 async function wallet_fixture_with_key(name){
-    let wallet = await manager.create(name);
+    const wallet = await manager.create(name);
     // Unlock wallet
-    let unlocked = await manager.unlock(name, JSON.parse(wallet).data.password);
+    await manager.unlock(name, JSON.parse(wallet).data.password);
     // Add first key to wallet
     return await manager.add_key(name, fixtures.seed);
 }
@@ -79,11 +79,11 @@ describe('Wallets API Tests',()=>{
 
 
     it("GET /api/v1/wallet/:name/keys returns a list of addresses in a wallet.", async () => {
-        let name = 'hodl'
-        let keyed_wallet = await wallet_fixture_with_key(name);
+        const name = 'hodl'
+        const keyed_wallet = await wallet_fixture_with_key(name);
         expect(JSON.parse(keyed_wallet).data.keys).to.have.lengthOf(1);
 
-        let url = `/api/v1/wallet/${name}/keys`;
+        const url = `/api/v1/wallet/${name}/keys`;
         const response= await request(server).get(url);
         expect(response.status).to.equal(200)
         expect(JSON.parse(response.body).result).to.equal('success');
@@ -97,13 +97,14 @@ describe('Wallets API Tests',()=>{
     })
     
     it('POST /api/v1/wallet/sign_transaction returns a signed transaction', async()=>{
-        let name = 'hodl'
-        let keyed_wallet = await wallet_fixture_with_key(name);
+        const name = 'hodl'
+        const keyed_wallet = await wallet_fixture_with_key(name);
         expect(JSON.parse(keyed_wallet).data.keys).to.have.lengthOf(1);
 
-        let body = { name: name, address: fixtures.address, message: fixtures.message }; 
+        const url = `/api/v1/wallet/${name}/sign`;
+        const body = { address: fixtures.address, message: fixtures.message }; 
         const response= await request(server)
-                                .post('/api/v1/wallet/sign')
+                                .post(url)
                                 .send(body)
                                 .set('Accept', 'application/json');
         expect(response.status).to.equal(201);

@@ -8,7 +8,7 @@ const appRoutes = router => {
     router.put('/wallet/:name/addkey/:secret', addKey);
     router.get('/wallet/:name/keys', walletKeys);
     router.get('/wallet/list', listWallets);
-    router.post('/wallet/sign', signTransaction);
+    router.post('/wallet/:name/sign', signTransaction);
     router.post('/wallet/keypair', createKeyPair);
 };
 

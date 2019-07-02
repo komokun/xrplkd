@@ -67,8 +67,8 @@ export const listWallets = (req, res, next) => {
 
 export const addKey = (req, res, next) => {
 
-    let name = req.params.name;
-    let secret = req.params.secret;
+    const name = req.params.name;
+    const secret = req.params.secret;
 
     Manager.add_key(name, secret)
     .then( (result) => {
@@ -84,7 +84,7 @@ export const addKey = (req, res, next) => {
 
 export const walletKeys = (req, res, next) => {
 
-    let name = req.params.name;
+    const name = req.params.name;
     
     Manager.public_keys(name)
     .then( (result) => {
@@ -100,13 +100,13 @@ export const walletKeys = (req, res, next) => {
 
 export const signTransaction = (req, res, next) => {
 
-    let input = {
-        name: req.body.name,
+    const name = req.params.name;
+    const input = {
         address: req.body.address,
         message: req.body.message,
     };
 
-    Manager.sign_transaction(input.name, input.address, input.message)
+    Manager.sign_transaction(name, input.address, input.message)
     .then( (result) => {
         res.status(201); 
         res.json(result);
