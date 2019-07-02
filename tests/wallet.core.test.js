@@ -10,7 +10,7 @@ const fixtures      = require('./fixtures/sign.json');
 async function new_wallet_fixture(...names) {
 
     Array.from(names).forEach(async (name) => {
-        await manager.create(name).then((result) => { expect(JSON.parse(result).result).to.equal('success');});
+        await manager.create(name).then((result) => { expect(result.result).to.equal('success');});
     });
 }
 
@@ -18,7 +18,7 @@ async function wallet_fixture_with_key(name){
 
     let wallet = await manager.create(name);
     // Unlock wallet
-    let unlocked = await manager.unlock(name, JSON.parse(wallet).data.password);
+    let unlocked = await manager.unlock(name, wallet.data.password);
     // Add first key to wallet
     return await manager.add_key(name, fixtures.seed);
 }
@@ -45,58 +45,54 @@ describe("Wallet Core Tests", function() {
         const name = 'default';
 
         const result = await manager.create(name);
-        let res = JSON.parse(result);
-        expect(res.result).to.equal('success');
-        expect(res.data.password).to.have.lengthOf(32);
+        expect(result.result).to.equal('success');
+        expect(result.data.password).to.have.lengthOf(32);
     })
 
     it("Creates a new wallet with no name provided.", async () => {
         const name = '';
 
         const result = await manager.create(name);
-        let res = JSON.parse(result);
         
-        expect(res.result).to.equal('success');
-        expect(res.data.wallet).to.equal('default');
-        expect(res.data.password).to.have.lengthOf(32);
+        expect(result.result).to.equal('success');
+        expect(result.data.wallet).to.equal('default');
+        expect(result.data.password).to.have.lengthOf(32);
     })
 
     it("Locks a wallet.", async () => {
  
         new_wallet_fixture('bag');
         const result = await manager.lock('bag');
-        let res = JSON.parse(result);
-        expect(res.result).to.equal('success');
-        expect(res.data.status).to.equal('locked');
+        expect(result.result).to.equal('success');
+        expect(result.data.status).to.equal('locked');
     })
  
     it("Unlocks a valid wallet.", async () => {
         
         new_wallet_fixture('bag');
         const result = await manager.unlock('bag', 'password');
-        let res = JSON.parse(result);
-        expect(res.result).to.equal('success');
-        expect(res.data.status).to.equal('unlocked');
+        expect(result.result).to.equal('success');
+        expect(result.data.status).to.equal('unlocked');
     })
 
     it("Locks... Unlock ... Locks a valid wallet.", async () => {
         
         new_wallet_fixture('bag');
         let result = await manager.lock('bag');
-        expect(JSON.parse(result).data.status).to.equal('locked');
+        expect(result.data.status).to.equal('locked');
 
         result = await manager.unlock('bag', 'password');
-        expect(JSON.parse(result).data.status).to.equal('unlocked');
+        expect(result.data.status).to.equal('unlocked');
 
         result = await manager.lock('bag');
-        expect(JSON.parse(result).data.status).to.equal('locked');
+        expect(result.data.status).to.equal('locked');
     })
 
     it("Should list all existing, valid wallets.", async () => {
 
         new_wallet_fixture('bag', 'hodl');
         const result = await manager.list();
-        let res = JSON.parse(result);
+        let res = result;
         expect(res.result).to.equal('success');
         expect(res.data).to.have.lengthOf(2); 
         expect(JSON.stringify(res.data[0])).to.equal(JSON.stringify({wallet: 'bag', status: 'locked'}));
@@ -105,25 +101,25 @@ describe("Wallet Core Tests", function() {
     it("Should reject when opening/unlocking a wallet that doesn't exist.", async () => {
 
         const result = await manager.unlock('bag', 'password');
-        expect(JSON.parse(result).data.status).to.equal('does_not_exist');
+        expect(result.data.status).to.equal('does_not_exist');
     })
 
     
     it("Verify locktime.", async () => {
 
         const result = await manager.create('bag');
-        let res = JSON.parse(result);
+        let res = result;
         expect(res.result).to.equal('success');
         expect(res.data.password).to.have.lengthOf(32);
 
         let unlocked = await manager.unlock('bag', res.data.password);
-        expect(JSON.parse(unlocked).data.status).to.equal('unlocked');
+        expect(unlocked.data.status).to.equal('unlocked');
 
         //await delay(2000)
 
         // Get latest status for wallet.
         let locked = await manager.lock('bag');
-        expect(JSON.parse(locked).data.status).to.equal('locked');
+        expect(locked.data.status).to.equal('locked');
 
     })
 
@@ -132,29 +128,29 @@ describe("Wallet Core Tests", function() {
         let name = 'bag'
         // Generate two keypairs
         const first_keys = await Keys.pairs();
-        expect(JSON.parse(first_keys).result).to.equal('success');
+        expect(first_keys.result).to.equal('success');
         const second_keys = await Keys.pairs();
-        expect(JSON.parse(second_keys).result).to.equal('success');
+        expect(second_keys.result).to.equal('success');
         // Create wallet
         const wallet = await manager.create(name);
         // Unlock wallet
-        let unlocked = await manager.unlock(name, JSON.parse(wallet).data.password);
-        //let wallet = JSON.parse(unlocked).data;
-        expect(JSON.parse(unlocked).data.status).to.equal('unlocked');
+        let unlocked = await manager.unlock(name, wallet.data.password);
+        //let wallet = unlocked.data;
+        expect(unlocked.data.status).to.equal('unlocked');
         // Add first key to wallet
-        const first_key_added = await manager.add_key(name, JSON.parse(first_keys).data.secret);
-        expect(JSON.parse(first_key_added).result).to.equal('success');
-        expect(JSON.parse(first_key_added).data.keys).to.have.lengthOf(1);
+        const first_key_added = await manager.add_key(name, first_keys.data.secret);
+        expect(first_key_added.result).to.equal('success');
+        expect(first_key_added.data.keys).to.have.lengthOf(1);
         // Lock wallet
         await manager.lock(name);
         // Unlock wallet
         unlocked = null;
-        unlocked = await manager.unlock(name, JSON.parse(wallet).data.password);
-        expect(JSON.parse(unlocked).data.status).to.equal('unlocked');
+        unlocked = await manager.unlock(name, wallet.data.password);
+        expect(unlocked.data.status).to.equal('unlocked');
         // Add second key to wallet
-        const second_key_added = await manager.add_key(name, JSON.parse(second_keys).data.secret);
-        expect(JSON.parse(second_key_added).result).to.equal('success');
-        expect(JSON.parse(second_key_added).data.keys).to.have.lengthOf(2);
+        const second_key_added = await manager.add_key(name, second_keys.data.secret);
+        expect(second_key_added.result).to.equal('success');
+        expect(second_key_added.data.keys).to.have.lengthOf(2);
     })
 
     it("Remove a private key from a wallet.", async () => {
@@ -162,16 +158,16 @@ describe("Wallet Core Tests", function() {
         let name = 'bag'
         // Generate two keypairs
         const keys = await Keys.pairs();
-        expect(JSON.parse(keys).result).to.equal('success');
+        expect(keys.result).to.equal('success');
         // Create wallet
         const wallet = await manager.create(name);
         // Unlock wallet
-        let unlocked = await manager.unlock(name, JSON.parse(wallet).data.password);
-        expect(JSON.parse(unlocked).data.status).to.equal('unlocked');
+        let unlocked = await manager.unlock(name, wallet.data.password);
+        expect(unlocked.data.status).to.equal('unlocked');
         // Add key to wallet
-        const key_added = await manager.add_key(name, JSON.parse(keys).data.secret);
-        expect(JSON.parse(key_added).result).to.equal('success');
-        expect(JSON.parse(key_added).data.keys).to.have.lengthOf(1);
+        const key_added = await manager.add_key(name, keys.data.secret);
+        expect(key_added.result).to.equal('success');
+        expect(key_added.data.keys).to.have.lengthOf(1);
         // Remove key from wallet
         //const key_removed = await manager.remove_key(name, pubkey);
 
@@ -183,26 +179,26 @@ describe("Wallet Core Tests", function() {
         let name = 'bag'
         const wallet = await manager.create(name);
         // Unlock wallet
-        let unlocked = await manager.unlock(name, JSON.parse(wallet).data.password);
-        expect(JSON.parse(unlocked).data.status).to.equal('unlocked');
+        let unlocked = await manager.unlock(name, wallet.data.password);
+        expect(unlocked.data.status).to.equal('unlocked');
         // Add first key to wallet
         const key_added = await manager.add_key(name, fixtures.seed);
-        expect(JSON.parse(key_added).result).to.equal('success');
-        expect(JSON.parse(key_added).data.keys).to.have.lengthOf(1);
+        expect(key_added.result).to.equal('success');
+        expect(key_added.data.keys).to.have.lengthOf(1);
 
         const signed = await manager.sign_transaction(name, fixtures.address, fixtures.message)
-        expect(JSON.parse(signed).result).to.equal('success');
-        expect (JSON.parse(signed).data.signature).to.equal(fixtures.signature);
+        expect(signed.result).to.equal('success');
+        expect (signed.data.signature).to.equal(fixtures.signature);
     })
 
     it("List addresses in wallet.", async () => {
         let name = 'hodl'
         let keyed_wallet = await wallet_fixture_with_key(name);
-        expect(JSON.parse(keyed_wallet).data.keys).to.have.lengthOf(1);
+        expect(keyed_wallet.data.keys).to.have.lengthOf(1);
 
         const keys = await manager.public_keys(name)
-        expect(JSON.parse(keys).result).to.equal('success');
-        expect(JSON.parse(keys).data).to.have.lengthOf(1);
+        expect(keys.result).to.equal('success');
+        expect(keys.data).to.have.lengthOf(1);
     })
 
     it("Sign a digest.", async () => {

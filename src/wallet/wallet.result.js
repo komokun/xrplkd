@@ -10,6 +10,6 @@ export const Result = (result, data, message) => {
 
    return new Promise((resolve, reject) => {
       
-      resolve(JSON.stringify({result: result , data: data, message: message}));
+      resolve({result: result , data: data, message: message});
    });
 };
