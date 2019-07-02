@@ -86,6 +86,8 @@ export const addKey = (req, res, next) => {
 
 export const walletKeys = (req, res, next) => {
 
+    name = req.params.name;
+    console.log('Wallet Keys name is : ', name);    
     Manager.public_keys(name)
     .then( (result) => {
         res.status(200); 

@@ -75,7 +75,7 @@ describe('Wallets API Tests',()=>{
         let keyed_wallet = await wallet_fixture_with_key(name);
         expect(JSON.parse(keyed_wallet).data.keys).to.have.lengthOf(1);
 
-        const response= await request(server).get('/api/v1/wallet/:name/keys');
+        const response= await request(server).get(`/api/v1/wallet/${name}/keys`);
         expect(response.status).to.equal(200)
         expect(JSON.parse(response.body).result).to.equal('success');
         expect(JSON.parse(response.body).data).to.have.lengthOf(1);
