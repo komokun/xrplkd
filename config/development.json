@@ -1,6 +1,6 @@
 {
    "name": "Server Development",
-   "port": 3100,
+   "port": 3101,
 
    "wallet_dir": ".",
    "wallet_ext": "wallet",

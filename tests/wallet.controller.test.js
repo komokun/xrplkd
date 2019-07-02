@@ -53,7 +53,7 @@ describe('Wallets API Tests',()=>{
         expect(JSON.parse(response.body).data.status).to.equal('locked');
     })
 
-    it('PUT /api/v1/wallet/:name/unlock/:pass locks an unlocked wallet', async()=>{
+    it('PUT /api/v1/wallet/:name/unlock/:pass unlocks a wallet', async()=>{
         const name = 'hodl'
         const wallet = await wallet_fixture(name);
         expect(JSON.parse(wallet).data.password).to.have.lengthOf(32);
@@ -65,7 +65,7 @@ describe('Wallets API Tests',()=>{
         expect(JSON.parse(response.body).data.status).to.equal('unlocked');
     })
 
-    it("PUT /api/v1/wallet/:name/addkey/:secret returns a list of addresses in a wallet.", async () => {
+    it("PUT /api/v1/wallet/:name/addkey/:secret add key to specified wallet.", async () => {
         const name = 'hodl'
         const keyed_wallet = await wallet_fixture_with_key(name);
         expect(JSON.parse(keyed_wallet).data.keys).to.have.lengthOf(1);

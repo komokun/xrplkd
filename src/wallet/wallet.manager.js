@@ -5,8 +5,6 @@ import { WalletInfo }      from './wallet.info'
 
 import config     from 'config';
 
-const path = require('path')
-
 const pvault    = require('../crypto/password.vault');
 const Vault     = pvault(config.get('wallet_dir')); // Wallet vault folder
 
@@ -31,7 +29,7 @@ const WalletManager = {
          return Result('failure', {}, `A wallet with name '${name}' already exists.`);
       }
 
-      let password = Password.generate();
+      const password = Password.generate();
       new Vault(name, password, { create: true });
       message = `Wallet '${name}' has been created with password ${password}. Ensure password is kept safely.`
       return Result('success', { wallet: name, password: password }, message);
@@ -49,7 +47,7 @@ const WalletManager = {
 
       try {
 
-         let pubkey = Keys.address(secret);
+         const pubkey = Keys.address(secret);
          let wallet = new Vault(name, SafeKeeper.get(name), { create: false });
          let list = [];
          // Get and validate list.
@@ -121,11 +119,11 @@ const WalletManager = {
          return Result('failure', {}, `Wallet '${name}' is locked. \nPlease unlock with password before using.`);
       }
 
-      let secret = WalletInfo.get_secret(name, address);
+      const secret = WalletInfo.get_secret(name, address);
       if(secret === null) {   
          return Result('failure', {}, `Provided public key NOT in wallet '${name}'.`);
       }
-      let signature = Keys.sign(secret, message);
+      const signature = Keys.sign(secret, message);
       return Result('success', { signature: signature }, message);
    },
 
