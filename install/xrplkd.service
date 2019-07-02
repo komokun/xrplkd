@@ -1,0 +1,12 @@
+[Unit]
+Description=XRPL Key Vault Service Daemon
+After=network.target
+
+[Service]
+WorkingDirectory=/home/l/working/js/xrplkd
+ExecStart=/usr/bin/yarn serve
+Restart=on-failure
+User=l
+
+[Install]
+WantedBy=multi-user.target
