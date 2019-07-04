@@ -135,8 +135,6 @@ export const createKeyPair = (req, res, next) => {
 export const appStatus = (req, res, next) => {
 
 
-    console.log('INSIDE APP STATUS');
-
     Manager.application()
     .then( (result) => {
         res.status(200); 
