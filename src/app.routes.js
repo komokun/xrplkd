@@ -1,7 +1,10 @@
 import { createWallet, listWallets, lockWallet, unlockWallet, 
-    addKey, walletKeys, signTransaction, createKeyPair } from './wallet/wallet.controller';
+    addKey, walletKeys, signTransaction, createKeyPair, 
+    appStatus } from './wallet/wallet.controller';
 
 const appRoutes = router => {
+    
+    router.get('/', appStatus);
     router.post('/wallet/create', createWallet);
     router.put('/wallet/:name/lock', lockWallet);
     router.put('/wallet/:name/unlock/:pass', unlockWallet);

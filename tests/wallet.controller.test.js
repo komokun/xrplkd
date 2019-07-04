@@ -34,6 +34,12 @@ describe('Wallets API Tests',()=>{
         rimraf(Glob.all(), done);
     })
 
+    it('GET /api/v1 check application status',async()=>{
+        const response= await request(server).get('/api/v1');
+        expect(response.status).to.equal(200)
+        expect(response.body.result).to.equal('success');
+    })
+
     it('POST /api/v1/wallet/create creates a wallet',async()=>{
         const response= await request(server).post('/api/v1/wallet/create');
         expect(response.status).to.equal(201)

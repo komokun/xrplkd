@@ -15,6 +15,10 @@ let keys = 'keys'
 
 const WalletManager = {
 
+   application: () => {
+      return Result('success', {}, '');
+   },
+
    create: (name) => {
 
       if(name.trim() === ''){
