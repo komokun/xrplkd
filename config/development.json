@@ -2,8 +2,8 @@
    "name": "Server Development",
    "port": 3101,
 
-   "wallet_dir": ".",
-   "wallet_ext": "wallet",
-   "vault_dir": ".",
+   "wallet_dir": "./wallets",
+   "wallet_ext": "pv",
+   "vault_dir": "./vault",
    "vault_ext": "pv"
 }

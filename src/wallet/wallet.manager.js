@@ -29,6 +29,7 @@ const WalletManager = {
          return Result('failure', { reason: 'invalid' }, `The submitted name '${name}' cannot be used as wallet name`);
       }
 
+      // console.log('Does name exist ? ', check_if_wallet_with_same_name_exists(name));
       if (check_if_wallet_with_same_name_exists(name)) { 
          return Result('failure', { reason: 'duplicate' }, `A wallet with name '${name}' already exists.`);
       }
@@ -139,6 +140,9 @@ function check_if_name_is_valid(name){ return (!/[^a-z]/.test(name)); };
 
 function check_if_wallet_with_same_name_exists(name){ 
 
+   // console.log('Wallet name ', name);
+   // console.log('Wallet list full ', WalletInfo.get_list());
+   // console.log('Wallet list ', WalletInfo.get_wallet_name_list());
    return WalletInfo.get_wallet_name_list().includes(name.trim()); 
 };
 
