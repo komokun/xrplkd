@@ -41,10 +41,27 @@ describe('Wallets API Tests',()=>{
     })
 
     it('POST /api/v1/wallet/create creates a wallet',async()=>{
-        const response= await request(server).post('/api/v1/wallet/create');
+        const response= await request(server).post('/api/v1/wallet/create')
+                                             .send({name: 'bag'})
+                                             .set('Accept', 'application/json');
         expect(response.status).to.equal(201)
         expect(response.body.result).to.equal('success');
         expect(response.body.data.password).to.have.lengthOf(32);
+    })
+
+    it('POST /api/v1/wallet/create creates a wallet with a duplicated name',async()=>{
+        const first = await request(server).post('/api/v1/wallet/create')
+                                             .send({name: 'bag'})
+                                             .set('Accept', 'application/json');
+        expect(first.status).to.equal(201)
+        expect(first.body.result).to.equal('success');
+
+        const second = await request(server).post('/api/v1/wallet/create')
+                                             .send({name: 'bag'})
+                                             .set('Accept', 'application/json');
+        expect(second.status).to.equal(403)
+        expect(second.body.result).to.equal('failure');
+        expect(second.body.data.reason).to.equal('duplicate');
     })
 
     it('PUT /api/v1/wallet/:name/lock locks an unlocked wallet', async()=>{
@@ -123,4 +140,5 @@ describe('Wallets API Tests',()=>{
         expect(response.status).to.equal(201)
         expect(response.body.result).to.equal('success');
     })
+
 })

@@ -49,6 +49,18 @@ describe("Wallet Core Tests", function() {
         expect(result.data.password).to.have.lengthOf(32);
     })
 
+    it("Tries to create a duplicate named wallet.", async () => {
+        const name = 'default';
+
+        const first = await manager.create(name);
+        expect(first.result).to.equal('success');
+
+        const second = await manager.create(name);
+        expect(second.result).to.equal('failure');
+        expect(second.data.reason).to.equal('duplicate');
+    })
+
+    
     it("Creates a new wallet with no name provided.", async () => {
         const name = '';
 
@@ -203,4 +215,5 @@ describe("Wallet Core Tests", function() {
 
     it("Sign a digest.", async () => {
     })
+
 });

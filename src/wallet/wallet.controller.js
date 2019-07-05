@@ -4,12 +4,13 @@ import { Keys }  from '../crypto/xrpl.keys'
 
 export const createWallet = (req, res, next) => {
 
-    const name = '';
-    if (req.name) { name = req.name; } 
+    let name = '';
+    if (req.body.name) { name = req.body.name; }
     
     Manager.create(name)
     .then( (result) => {
-        res.status(201); 
+
+        (result.result === 'failure') ? res.status(403) : res.status(201); 
         res.json(result);
     })
     .catch( (err) => {

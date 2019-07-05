@@ -26,11 +26,11 @@ const WalletManager = {
       }
 
       if (!check_if_name_is_valid(name)) { 
-         return Result('failure', {}, `The submitted name cannot be used as wallet name`);
+         return Result('failure', { reason: 'invalid' }, `The submitted name '${name}' cannot be used as wallet name`);
       }
 
       if (check_if_wallet_with_same_name_exists(name)) { 
-         return Result('failure', {}, `A wallet with name '${name}' already exists.`);
+         return Result('failure', { reason: 'duplicate' }, `A wallet with name '${name}' already exists.`);
       }
 
       const password = Password.generate();
@@ -41,7 +41,7 @@ const WalletManager = {
 
    add_key: (name, secret) => {
 
-      if (check_if_wallet_with_same_name_exists(name)) { 
+      if (!check_if_wallet_with_same_name_exists(name)) { 
          return Result('failure', {}, `A wallet with name '${name}' does not exists.`);
       }
 
@@ -69,7 +69,6 @@ const WalletManager = {
   },
 
    verify: (name, pubkey) => {
-      //let r = WalletInfo.get_public_keys(name).includes(pubkey);
       return WalletInfo.get_public_keys(name).includes(pubkey) ? 
             Result('success', {}, `${pubkey} is in wallet '${name}'`) :  
             Result('failure', {}, `${pubkey} is NOT in wallet '${name}'`)
@@ -138,6 +137,9 @@ function check_if_wallet_is_unlocked(name){  return SafeKeeper.status(name) === 
 
 function check_if_name_is_valid(name){ return (!/[^a-z]/.test(name)); };
 
-function check_if_wallet_with_same_name_exists(name){ return WalletInfo.get_list().includes(name); };
+function check_if_wallet_with_same_name_exists(name){ 
+
+   return WalletInfo.get_wallet_name_list().includes(name.trim()); 
+};
 
 export default WalletManager;

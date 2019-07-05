@@ -48,5 +48,15 @@ export const WalletInfo = {
       })
    
       return names;      
+   },
+
+   get_wallet_name_list: () => {
+      let names = []
+      let files = Files.getByExt(config.get('wallet_dir'), config.get('wallet_ext'));
+      files.forEach((file) => {
+         names.push(path.basename(file).replace(/\.[^/.]+$/, ""));
+      })
+   
+      return names;      
    }
 }
