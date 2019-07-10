@@ -111,13 +111,16 @@ const WalletManager = {
 
    // Wallet name. Use as Safekeeper 'key'
    public_keys: (name) => { 
+      
+      if (!check_if_wallet_is_unlocked(name)) { 
+         return Result('failure', {}, `Wallet '${name}' is locked. \nPlease unlock with password before using.`);
+      }
 
       let keys = WalletInfo.get_public_keys(name);
       return Result('success', keys, `${keys.length} valid public key(s) found.`);
    },
 
    sign_transaction: (name, address, message) => { 
-
 
       if (!check_if_wallet_is_unlocked(name)) { 
          return Result('failure', {}, `Wallet '${name}' is locked. \nPlease unlock with password before using.`);
@@ -139,10 +142,6 @@ function check_if_wallet_is_unlocked(name){  return SafeKeeper.status(name) === 
 function check_if_name_is_valid(name){ return (!/[^a-z]/.test(name)); };
 
 function check_if_wallet_with_same_name_exists(name){ 
-
-   // console.log('Wallet name ', name);
-   // console.log('Wallet list full ', WalletInfo.get_list());
-   // console.log('Wallet list ', WalletInfo.get_wallet_name_list());
    return WalletInfo.get_wallet_name_list().includes(name.trim()); 
 };
 

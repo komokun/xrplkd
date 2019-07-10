@@ -12,7 +12,7 @@ const appRoutes = router => {
     router.get('/wallet/:name/keys', walletKeys);
     router.get('/wallet/list', listWallets);
     router.post('/wallet/:name/sign', signTransaction);
-    router.post('/wallet/keypair', createKeyPair);
+    router.get('/wallet/keypair', createKeyPair);
 };
 
 export default appRoutes;
