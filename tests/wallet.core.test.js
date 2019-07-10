@@ -98,6 +98,7 @@ describe("Wallet Core Tests", function() {
 
         result = await manager.lock('bag');
         expect(result.data.status).to.equal('locked');
+
     })
 
     it("Should list all existing, valid wallets.", async () => {

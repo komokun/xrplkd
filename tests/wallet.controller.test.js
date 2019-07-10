@@ -86,6 +86,12 @@ describe('Wallets API Tests',()=>{
         expect(response.status).to.equal(202)
         expect(response.body.result).to.equal('success');
         expect(response.body.data.status).to.equal('unlocked');
+
+        //const res= await request(server).get('/api/v1/wallet/list');
+        //expect(res.status).to.equal(200)
+        //expect(res.body.result).to.equal('success');
+        //console.log(res.body);
+
     })
 
     it("PUT /api/v1/wallet/:name/addkey/:secret add key to specified wallet.", async () => {

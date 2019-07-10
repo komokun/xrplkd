@@ -60,6 +60,6 @@ const delay = ms => new Promise(_ => setTimeout(_, ms));
 
 async function LockTimer(key) {
   
-   await delay(1000);
+   await delay(60000);
    SafeKeeper.unset(key);
 }
