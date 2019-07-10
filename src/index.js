@@ -5,6 +5,7 @@ import  bodyParser from 'body-parser';
 import cors from 'cors';
 import appRouter from './app.routes';
 
+
 const app=express();
 const router = express.Router();
 // support json encoded bodies in the req
@@ -22,7 +23,7 @@ app.all('/*', function(req, res, next) {
         'Access-Control-Allow-Headers',
         'X-Requested-With, Content-Type'
     );
-    res.header('Access-Control-Allow-Methods', 'GET, POST', 'PUT');
+    res.header('Access-Control-Allow-Methods', 'GET', 'POST', 'PUT');
     next();
 });
 

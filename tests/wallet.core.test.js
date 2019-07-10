@@ -4,7 +4,7 @@ import rimraf       from 'rimraf'
 import manager      from '../src/wallet/wallet.manager'
 import { Keys }     from '../src/crypto/xrpl.keys'
 
-import { Glob }        from './fixtures/test.config'
+import { Glob }        from '../config/fs.config'
 const fixtures      = require('./fixtures/sign.json');
 
 async function new_wallet_fixture(...names) {

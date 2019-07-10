@@ -4,7 +4,7 @@ import server           from '../src/index';
 import  request         from 'supertest';
 
 import manager          from '../src/wallet/wallet.manager'
-import { Glob }         from './fixtures/test.config'
+import { Glob }         from '../config/fs.config'
 
 const fixtures          = require('./fixtures/sign.json');
 
