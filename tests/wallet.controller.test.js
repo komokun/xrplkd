@@ -120,12 +120,41 @@ describe('Wallets API Tests',()=>{
         expect(response.body.result).to.equal('success');
     })
     
-    it('POST /api/v1/wallet/sign_transaction returns a signed transaction', async()=>{
+    it('POST /api/v1/wallet/sign/transaction returns a signed transaction blob and id', async()=>{
         const name = 'hodl'
         const keyed_wallet = await wallet_fixture_with_key(name);
         expect(keyed_wallet.data.keys).to.have.lengthOf(1);
 
-        const url = `/api/v1/wallet/${name}/sign`;
+        const url = `/api/v1/wallet/${name}/sign/transaction`;
+        //
+
+        const transaction = {
+            TransactionType: 'Payment',
+            Account: fixtures.address,
+            Fee: 10,
+            Destination: 'rPnZovFzRPYGc4zoQPZVxjZmiyPHaiZ5gH',
+            DestinationTag: 1337,
+            Amount: 1.05 * 1000000, // Amount in drops, so multiply (6 decimal positions)
+            Sequence: 110
+        }
+
+        const body = { address: fixtures.address, transaction: transaction }; 
+        
+        const response= await request(server)
+                                .post(url)
+                                .send(body)
+                                .set('Accept', 'application/json');
+
+        expect(response.status).to.equal(201);
+        expect(response.body.result).to.equal('success');
+    })
+
+    it('POST /api/v1/wallet/sign/message returns a signed message', async()=>{
+        const name = 'hodl'
+        const keyed_wallet = await wallet_fixture_with_key(name);
+        expect(keyed_wallet.data.keys).to.have.lengthOf(1);
+
+        const url = `/api/v1/wallet/${name}/sign/message`;
         const body = { address: fixtures.address, message: fixtures.message }; 
         const response= await request(server)
                                 .post(url)

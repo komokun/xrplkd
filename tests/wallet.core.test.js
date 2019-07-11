@@ -186,6 +186,24 @@ describe("Wallet Core Tests", function() {
 
     })
 
+    it("Sign a message.", async () => {
+
+        // Create wallet
+        let name = 'bag'
+        const wallet = await manager.create(name);
+        // Unlock wallet
+        let unlocked = await manager.unlock(name, wallet.data.password);
+        expect(unlocked.data.status).to.equal('unlocked');
+        // Add first key to wallet
+        const key_added = await manager.add_key(name, fixtures.seed);
+        expect(key_added.result).to.equal('success');
+        expect(key_added.data.keys).to.have.lengthOf(1);
+
+        const signed = await manager.sign_message(name, fixtures.address, fixtures.message)
+        expect(signed.result).to.equal('success');
+        expect (signed.data.signature).to.equal(fixtures.signature);
+    })
+
     it("Sign a transaction.", async () => {
 
         // Create wallet
@@ -199,9 +217,18 @@ describe("Wallet Core Tests", function() {
         expect(key_added.result).to.equal('success');
         expect(key_added.data.keys).to.have.lengthOf(1);
 
-        const signed = await manager.sign_transaction(name, fixtures.address, fixtures.message)
+        const transaction = {
+            TransactionType: 'Payment',
+            Account: fixtures.address,
+            Fee: 10,
+            Destination: 'rPnZovFzRPYGc4zoQPZVxjZmiyPHaiZ5gH',
+            DestinationTag: 1337,
+            Amount: 1.05 * 1000000, // Amount in drops, so multiply (6 decimal positions)
+            Sequence: 110
+        }
+
+        const signed = await manager.sign_transaction(name, fixtures.address, transaction)
         expect(signed.result).to.equal('success');
-        expect (signed.data.signature).to.equal(fixtures.signature);
     })
 
     it("List addresses in wallet.", async () => {

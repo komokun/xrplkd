@@ -8,7 +8,7 @@ import config     from 'config';
 const pvault    = require('../crypto/password.vault');
 const Vault     = pvault(config.get('wallet_dir')); // Wallet vault folder
 
-let message = '' // a string detailing the result of the operation.
+//let message = '' // a string detailing the result of the operation.
 let data = null; // a json of return data.
 let keys = 'keys'
 
@@ -36,8 +36,9 @@ const WalletManager = {
 
       const password = Password.generate();
       new Vault(name, password, { create: true });
-      message = `Wallet '${name}' has been created with password ${password}. Ensure password is kept safely.`
-      return Result('success', { wallet: name, password: password }, message);
+      return Result('success', 
+                     { wallet: name, password: password }, 
+                        `Wallet '${name}' has been created with password ${password}. Ensure password is kept safely.`);
    },
 
    add_key: (name, secret) => {
@@ -102,8 +103,7 @@ const WalletManager = {
    list: () => {
    
       data = WalletInfo.get_list();
-      message = `${data.length} valid wallet(s) found.`
-      return Result('success', data, message);
+      return Result('success', data, `${data.length} valid wallet(s) found.`);
    },
 
    // Add password verification.
@@ -120,7 +120,7 @@ const WalletManager = {
       return Result('success', keys, `${keys.length} valid public key(s) found.`);
    },
 
-   sign_transaction: (name, address, message) => { 
+   sign_transaction: async (name, address, transaction) => {
 
       if (!check_if_wallet_is_unlocked(name)) { 
          return Result('failure', {}, `Wallet '${name}' is locked. \nPlease unlock with password before using.`);
@@ -130,11 +130,25 @@ const WalletManager = {
       if(secret === null) {   
          return Result('failure', {}, `Provided public key NOT in wallet '${name}'.`);
       }
-      const signature = Keys.sign(secret, message);
-      return Result('success', { signature: signature }, message);
+
+      return Result('success', await Keys.sign_transaction(secret, transaction), ``);
    },
 
-   sign_digest: () => { return Result(data, {}, message); }
+   sign_message: (name, address, msg) => { 
+
+      if (!check_if_wallet_is_unlocked(name)) { 
+         return Result('failure', {}, `Wallet '${name}' is locked. \nPlease unlock with password before using.`);
+      }
+
+      const secret = WalletInfo.get_secret(name, address);
+      if(secret === null) {   
+         return Result('failure', {}, `Provided public key NOT in wallet '${name}'.`);
+      }
+      const signature = Keys.sign_message(secret, msg);
+      return Result('success', { signature: signature }, ``);
+   },
+
+   sign_digest: () => { return Result(data, {}, ''); }
 };
 
 function check_if_wallet_is_unlocked(name){  return SafeKeeper.status(name) === 'unlocked' ? true : false;  }

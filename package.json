@@ -63,6 +63,9 @@
     "moment": "^2.24.0",
     "mongoose": "^5.5.15",
     "rimraf": "^2.6.3",
-    "ripple-keypairs": "^0.11.0"
+    "ripple-binary-codec": "^0.2.1",
+    "ripple-hashes": "^0.3.2",
+    "ripple-keypairs": "^0.11.0",
+    "rippled-ws-client-sign": "^0.2.0"
   }
 }

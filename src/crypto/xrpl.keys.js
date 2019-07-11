@@ -3,6 +3,7 @@ import { Result } from '../wallet/wallet.result';
 
 var generator = require('generate-password');
 const keypairs = require('ripple-keypairs');
+const RippledWsClientSign = require('rippled-ws-client-sign') 
 
 export const Password = {
 
@@ -26,13 +27,17 @@ export const Keys = {
       return Result('success', data, '');
    },
 
+   keypair: function (secret) {
+      return keypairs.deriveKeypair(secret);
+   },
+
    address: function (secret) {
       const keypair = keypairs.deriveKeypair(secret);
 
       return keypairs.deriveAddress(keypair.publicKey);
    },
    
-   sign: function (secret, message) {
+   sign_message: function (secret, message) {
 
       let privkey = keypairs.deriveKeypair(secret).privateKey;
 
@@ -42,10 +47,9 @@ export const Keys = {
       return signature;
    },
 
-   keypair: function (secret) {
-      return keypairs.deriveKeypair(secret);
-   }
+   sign_transaction: async function (secret, transaction) {
+
+      return await new RippledWsClientSign(transaction, secret);
+   },      
 
 };
-
-//export default Password;

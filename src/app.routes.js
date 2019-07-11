@@ -1,6 +1,6 @@
 import { createWallet, listWallets, lockWallet, unlockWallet, 
     addKey, walletKeys, signTransaction, createKeyPair, 
-    appStatus } from './wallet/wallet.controller';
+    signMessage, appStatus } from './wallet/wallet.controller';
 
 const appRoutes = router => {
     
@@ -11,7 +11,8 @@ const appRoutes = router => {
     router.put('/wallet/:name/addkey/:secret', addKey);
     router.get('/wallet/:name/keys', walletKeys);
     router.get('/wallet/list', listWallets);
-    router.post('/wallet/:name/sign', signTransaction);
+    router.post('/wallet/:name/sign/transaction', signTransaction);
+    router.post('/wallet/:name/sign/message', signMessage);
     router.get('/wallet/keypair', createKeyPair);
 };
 

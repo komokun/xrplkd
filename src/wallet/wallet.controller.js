@@ -104,10 +104,30 @@ export const signTransaction = (req, res, next) => {
     const name = req.params.name;
     const input = {
         address: req.body.address,
+        transaction: req.body.transaction,
+    };
+
+    Manager.sign_transaction(name, input.address, input.transaction)
+    .then( (result) => {
+        res.status(201); 
+        res.json(result);
+    })
+    .catch( (err) => {
+        res.json({
+            error: err
+        });
+    })
+};
+
+export const signMessage = (req, res, next) => {
+
+    const name = req.params.name;
+    const input = {
+        address: req.body.address,
         message: req.body.message,
     };
 
-    Manager.sign_transaction(name, input.address, input.message)
+    Manager.sign_message(name, input.address, input.message)
     .then( (result) => {
         res.status(201); 
         res.json(result);
