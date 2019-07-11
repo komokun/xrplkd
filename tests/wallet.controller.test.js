@@ -126,7 +126,6 @@ describe('Wallets API Tests',()=>{
         expect(keyed_wallet.data.keys).to.have.lengthOf(1);
 
         const url = `/api/v1/wallet/${name}/sign/transaction`;
-        //
 
         const transaction = {
             TransactionType: 'Payment',
@@ -137,7 +136,6 @@ describe('Wallets API Tests',()=>{
             Amount: 1.05 * 1000000, // Amount in drops, so multiply (6 decimal positions)
             Sequence: 110
         }
-
         const body = { address: fixtures.address, transaction: transaction }; 
         
         const response= await request(server)
