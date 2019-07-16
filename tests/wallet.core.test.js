@@ -204,7 +204,7 @@ describe("Wallet Core Tests", function() {
         expect (signed.data.signature).to.equal(fixtures.signature);
     })
 
-    it("Sign a transaction.", async () => {
+    it("Sign a payment transaction.", async () => {
 
         // Create wallet
         let name = 'bag'
@@ -225,6 +225,32 @@ describe("Wallet Core Tests", function() {
             DestinationTag: 1337,
             Amount: 1.05 * 1000000, // Amount in drops, so multiply (6 decimal positions)
             Sequence: 110
+        }
+
+        const signed = await manager.sign_transaction(name, fixtures.address, transaction)
+        expect(signed.result).to.equal('success');
+    })
+
+     it("Sign a trustset transaction.", async () => {
+
+        // Create wallet
+        let name = 'bag'
+        const wallet = await manager.create(name);
+        // Unlock wallet
+        let unlocked = await manager.unlock(name, wallet.data.password);
+        expect(unlocked.data.status).to.equal('unlocked');
+        // Add first key to wallet
+        const key_added = await manager.add_key(name, fixtures.seed);
+        expect(key_added.result).to.equal('success');
+        expect(key_added.data.keys).to.have.lengthOf(1);
+
+        const transaction = {
+            TransactionType:'TrustSet',
+        	Account:fixtures.address,
+        	Fee:'1200',
+        	Flags:262144,
+        	LimitAmount:{currency:'MTN',issuer:'rPnZovFzRPYGc4zoQPZVxjZmiyPHaiZ5gH', value: 30},
+        	Sequence:2
         }
 
         const signed = await manager.sign_transaction(name, fixtures.address, transaction)
